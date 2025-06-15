@@ -45,6 +45,15 @@ const render = () => {
 	} else {
 		document.getElementById("app").innerHTML = `<h1>404 - Page Not Found</h1>`;
 	}
+	updateActiveLink();
+};
+
+const updateActiveLink = () => {
+	const links = document.querySelectorAll("[data-link]");
+	links.forEach((l) => l.classList.remove("active"));
+	const effectivePath = location.pathname === "/index.html" ? "/" : location.pathname;
+	const active = Array.from(links).find((l) => l.pathname === effectivePath);
+	if (active) active.classList.add("active");
 };
 
 const navigate = (url) => {

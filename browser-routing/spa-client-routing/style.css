@@ -33,3 +33,7 @@ nav a {
 nav a:hover {
 	color: #4caf50;
 }
+
+[data-link].active {
+	color: #4caf50;
+}
