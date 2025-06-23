@@ -1,11 +1,11 @@
 const routes = ["/", "/home", "/about", "/contact"];
 
 const render = () => {
-	const path = location.pathname === "/index.html" ? "/home" : location.pathname;
+	const path = location.pathname === "/" ? "/home" : location.pathname;
 	const match = routes.find((r) => r === path);
 
 	if (match) {
-		fetch(`http://localhost:3001${path}`)
+		fetch(`http://localhost:3003${path}`)
 			.then((res) => {
 				if (!res.ok) {
 					throw new Error(`HTTP error! status: ${res.status}`);
@@ -28,7 +28,7 @@ const updateActiveLink = () => {
 	const links = document.querySelectorAll("[data-link]");
 	links.forEach((l) => l.classList.remove("active"));
 
-	const effectivePath = location.pathname;
+	const effectivePath = location.pathname === "/" ? "/home" : location.pathname;
 
 	const active = Array.from(links).find((l) => l.pathname === effectivePath);
 	if (active) active.classList.add("active");
