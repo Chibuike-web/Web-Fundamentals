@@ -1,4 +1,4 @@
-const routes = ["/home", "/about", "/contact"];
+const routes = ["/", "/home", "/about", "/contact"];
 
 const render = () => {
 	const path = location.pathname === "/index.html" ? "/home" : location.pathname;
@@ -28,7 +28,7 @@ const updateActiveLink = () => {
 	const links = document.querySelectorAll("[data-link]");
 	links.forEach((l) => l.classList.remove("active"));
 
-	const effectivePath = location.pathname === "/index.html" ? "/home" : location.pathname;
+	const effectivePath = location.pathname;
 
 	const active = Array.from(links).find((l) => l.pathname === effectivePath);
 	if (active) active.classList.add("active");
