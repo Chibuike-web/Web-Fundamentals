@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>User Status Monitor</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Inter;
+			}
+			h2 {
+				margin-bottom: 10px;
+			}
+
+			ul#status-list {
+				list-style: none;
+				padding: 0;
+			}
+
+			li {
+				padding: 10px;
+				margin: 5px 0;
+				border-radius: 5px;
+				color: white;
+			}
+
+			.online {
+				background-color: green;
+			}
+
+			.offline {
+				background-color: gray;
+			}
+
+			.away {
+				background-color: orange;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>User Status List</h2>
+		<ul id="status-list">
+			<li class="offline" data-user="Alice">Alice</li>
+			<li class="offline" data-user="Bob">Bob</li>
+			<li class="offline" data-user="Charlie">Charlie</li>
+		</ul>
+		<script>
+			const listItems = document.querySelectorAll("#status-list li");
+
+			const observer = new MutationObserver((mutationsList) => {
+				mutationsList.forEach((mutation) => {
+					if (mutation.type === "attributes" && mutation.attributeName === "class") {
+						const username = mutation.target.dataset.user;
+						const newStatus = mutation.target.className;
+						console.log(`${username} is now ${newStatus}`);
+					}
+				});
+			});
+
+			const config = {
+				attributes: true,
+				attributeFilter: ["class", "style"],
+			};
+
+			listItems.forEach((li) => observer.observe(li, config));
+
+			const alice = document.querySelector('[data-user="Alice"]');
+			alice.className = "online";
+		</script>
+	</body>
+</html>
