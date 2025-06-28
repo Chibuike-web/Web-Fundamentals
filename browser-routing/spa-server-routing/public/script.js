@@ -45,9 +45,7 @@ const updateActiveLink = () => {
 	const links = document.querySelectorAll("[data-link]");
 	links.forEach((l) => l.classList.remove("active"));
 
-	const effectivePath = location.pathname === "/" ? "/home" : location.pathname;
-
-	const active = Array.from(links).find((l) => l.pathname === effectivePath);
+	const active = Array.from(links).find((l) => l.pathname === location.pathname);
 	if (active) active.classList.add("active");
 };
 
