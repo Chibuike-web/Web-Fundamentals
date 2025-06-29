@@ -7,18 +7,12 @@ const confirmPasswordContainer = document.getElementById("confirm-password-input
 const checkboxContainer = document.getElementById("checkbox-input");
 const form = document.querySelector(".signup-form");
 
-const nameInput = document.getElementById("name");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const confirmPasswordInput = document.getElementById("confirmPassword");
-const checkboxInput = document.getElementById("checkbox");
-
 const errors = {
-	name: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
-	checked: false,
+	name: null,
+	email: null,
+	password: null,
+	confirmPassword: null,
+	checked: null,
 };
 
 let isSubmitting = false;
@@ -27,21 +21,18 @@ form.addEventListener("submit", (e) => {
 	e.preventDefault();
 	isSubmitting = true;
 	const formdata = new FormData(e.currentTarget);
+	const name = formdata.get("name");
+	const email = formdata.get("email");
+	const password = formdata.get("password");
+	const confirmPassword = formdata.get("confirmPassword");
+	const checkbox = formdata.get("checkbox");
 
-	const nameValue = nameInput.value.trim();
-	const emailValue = emailInput.value.trim();
-	const passwordValue = passwordInput.value;
-	const confirmPasswordValue = confirmPasswordInput.value;
-	const checkboxChecked = checkboxInput.checked;
-
-	errors.name = validateName(nameValue);
-	errors.email = validateEmail(emailValue);
-	errors.password = validatePassword(passwordValue);
+	errors.name = validateName(name);
+	errors.email = validateEmail(email);
+	errors.password = validatePassword(password);
 	errors.confirmPassword =
-		!confirmPasswordValue || passwordValue !== confirmPasswordValue
-			? "Passwords do not match"
-			: null;
-	errors.checked = validateCheked(checkboxChecked);
+		!confirmPassword || password !== confirmPassword ? "Passwords do not match" : null;
+	errors.checked = validateCheked(checkbox);
 
 	errors.name && showError(nameContainer, errors.name);
 	errors.email && showError(emailContainer, errors.email);
@@ -54,14 +45,12 @@ form.addEventListener("submit", (e) => {
 		return;
 	}
 
-	console.log(errors);
-
 	const data = {
-		name: formdata.get("name"),
-		email: formdata.get("email"),
-		password: formdata.get("password"),
-		confirmPassword: formdata.get("confirmPassword"),
-		checkbox: formdata.get("checkbox"),
+		name,
+		email,
+		password,
+		confirmPassword,
+		checkbox,
 	};
 	console.log(data);
 	isSubmitting = false;
@@ -78,13 +67,34 @@ function showError(container, message) {
 }
 
 const inputs = document.querySelectorAll("input");
-inputs.forEach((input) =>
+inputs.forEach((input) => {
 	input.addEventListener("input", () => {
 		if (input.id) {
-			errors[input.id] = "";
+			errors[input.id] = null;
 		}
 		const container = input.closest(".form-group");
 		const errorEl = container?.querySelector(".error");
 		errorEl?.remove();
-	})
-);
+	});
+
+	input.addEventListener("blur", () => {
+		const container = input.closest(".form-group");
+		let error = "";
+
+		switch (input.name) {
+			case "name":
+				error = validateName(input.value);
+				break;
+			case "email":
+				error = validateEmail(input.value);
+				break;
+			case "password":
+				error = validatePassword(input.value);
+		}
+
+		if (error) {
+			showError(container, error);
+			errors[input.id] = error;
+		}
+	});
+});
