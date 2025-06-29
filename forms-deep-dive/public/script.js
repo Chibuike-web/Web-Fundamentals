@@ -43,9 +43,6 @@ form.addEventListener("submit", (e) => {
 			: null;
 	errors.checked = validateCheked(checkboxChecked);
 
-	const errorText = document.createElement("p");
-	errorText.classList.add("error");
-
 	errors.name && showError(nameContainer, errors.name);
 	errors.email && showError(emailContainer, errors.email);
 	errors.password && showError(passwordContainer, errors.password);

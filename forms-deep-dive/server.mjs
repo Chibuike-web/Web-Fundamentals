@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
 	const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
 	const pathname = parsedUrl.pathname;
 
-	if (req.method === "GET" && pathname === "/testing") {
+	if (req.method === "GET" && pathname === "/validate-form") {
 		res.writeHead(200, { "Content-type": "application/json" });
 		res.end(JSON.stringify({ message: "Chibuike Maduabuchi" }));
 	} else {
