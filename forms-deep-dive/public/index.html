@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Form Deep Dive</title>
+		<link rel="stylesheet" href="style.css" />
+		<script src="./script.js" type="module" defer></script>
+	</head>
+	<body>
+		<section class="signup-section">
+			<main class="signup-main">
+				<h1 class="signup-title">Sign up Form</h1>
+				<form class="signup-form">
+					<fieldset id="name-input" class="form-group">
+						<label for="name" class="form-label">Name</label>
+						<input
+							id="name"
+							name="name"
+							type="text"
+							class="form-input"
+							placeholder="Enter full name"
+						/>
+					</fieldset>
+
+					<fieldset id="email-input" class="form-group">
+						<label for="email" class="form-label">Email</label>
+						<input
+							id="email"
+							name="email"
+							type="text"
+							class="form-input"
+							placeholder="Enter your email"
+						/>
+					</fieldset>
+
+					<fieldset id="password-input" class="form-group">
+						<label for="password" class="form-label">Password</label>
+						<input
+							id="password"
+							name="password"
+							type="password"
+							class="form-input"
+							placeholder="Enter your password"
+						/>
+					</fieldset>
+
+					<fieldset id="confirm-password-input" class="form-group">
+						<label for="confirmPassword" class="form-label">Confirm Password</label>
+						<input
+							id="confirmPassword"
+							name="confirmPassword"
+							type="password"
+							class="form-input"
+							placeholder="Confirm Password"
+						/>
+					</fieldset>
+
+					<fieldset id="checkbox-input" class="form-group">
+						<label for="checkbox" class="checkbox-label">
+							<input type="checkbox" name="checkbox" id="checkbox" class="form-checkbox" />
+							<span class="checkbox-text">Accept our Terms and Conditions</span>
+						</label>
+					</fieldset>
+
+					<button class="form-submit-btn">Submit</button>
+				</form>
+			</main>
+		</section>
+	</body>
+</html>

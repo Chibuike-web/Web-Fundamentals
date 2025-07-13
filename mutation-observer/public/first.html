@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Shopping Cart Observer</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Inter;
+			}
+
+			#cart {
+				border: 1px solid #ccc;
+				padding: 10px;
+				margin-top: 10px;
+			}
+			.item {
+				padding: 5px;
+				margin: 5px 0;
+				background-color: #f0f0f0;
+			}
+			#cart-count {
+				font-weight: bold;
+				color: #2c3e50;
+			}
+
+			.hide {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Shopping Cart</h2>
+		<p>Items in cart: <span id="cart-count">0</span></p>
+		<button type="button" id="add-btn">Add Random Item</button>
+		<ul id="cart" class="hide"></ul>
+	</body>
+	<script>
+		const cart = document.getElementById("cart");
+		const addBtn = document.getElementById("add-btn");
+		const cartCount = document.getElementById("cart-count");
+
+		const productNames = ["Apple", "Banana", "Orange", "Grapes", "Mango"];
+
+		const addItem = () => {
+			const index = Math.floor(Math.random() * productNames.length);
+			const item = productNames[index];
+			const listItem = document.createElement("li");
+			listItem.textContent = item;
+			cart.classList.remove("hide");
+			cart.appendChild(listItem);
+			cartCount.textContent = parseInt(cartCount.textContent) + 1;
+		};
+
+		addBtn.addEventListener("click", addItem);
+
+		const observer = new MutationObserver((mutationsLists) => {
+			mutationsLists.forEach((mutation) => {
+				if (mutation.type === "childList") {
+					mutation.addedNodes.forEach((node) => {
+						if (node.nodeType === Node.ELEMENT_NODE) {
+							console.log("Child Mutation:", node.textContent.trim());
+						}
+					});
+				}
+			});
+		});
+
+		const config = {
+			childList: true,
+			// subtree: true,
+		};
+
+		observer.observe(cart, config);
+	</script>
+</html>

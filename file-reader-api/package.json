@@ -1,0 +1,16 @@
+{
+	"name": "file-reader-api",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"dev": "node --watch server.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.13.1",
+	"dependencies": {
+		"@mjackson/multipart-parser": "^0.10.1"
+	}
+}

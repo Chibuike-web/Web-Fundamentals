@@ -1,0 +1,14 @@
+{
+	"name": "readfile-vs-stream",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"read": "node --watch readFileServer.js",
+		"stream": "node --watch streamServer.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.13.1"
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chat Stream Detector</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Inter;
+				width: 100vw;
+				height: 100vh;
+				display: grid;
+				place-items: center;
+			}
+
+			main {
+				width: 100%;
+				max-width: 500px;
+				text-align: center;
+			}
+
+			button {
+				padding: 6px;
+				margin-top: 20px;
+			}
+
+			#response-container {
+				border: 1px solid #ccc;
+				padding: 10px;
+				margin-top: 10px;
+				min-height: 40px;
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h2>Simulated Chatgpt Response</h2>
+			<button onclick="startStreaming()">Simulate Streaming</button>
+			<div id="response-container"></div>
+		</main>
+
+		<script>
+			const container = document.getElementById("response-container");
+
+			let streamTimer = null;
+			let idleTimer = null;
+
+			const observer = new MutationObserver(() => {
+				clearTimeout(idleTimer);
+				idleTimer = setTimeout(() => {
+					container.style.display = "block";
+					console.log("streaming end");
+				}, 500);
+			});
+
+			observer.observe(container, {
+				childList: true,
+				characterData: true,
+				subtree: true,
+			});
+
+			function startStreaming() {
+				console.log("streaming start");
+				container.textContent = "";
+				const text = "This is a simulated ChatGPT streaming response.";
+
+				let i = 0;
+				streamTimer = setInterval(() => {
+					if (i < text.length) {
+						container.textContent += text[i];
+						i++;
+					} else {
+						clearInterval(streamTimer);
+					}
+				}, 100);
+			}
+		</script>
+	</body>
+</html>

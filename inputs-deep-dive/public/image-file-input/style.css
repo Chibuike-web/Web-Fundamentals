@@ -1,0 +1,154 @@
+/* === Global Reset === */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	display: grid;
+	place-items: center;
+	height: 100vh;
+	background-color: #f0f2f5;
+	font-family: "Inter", sans-serif;
+	color: #333;
+}
+
+/* === Container === */
+main {
+	background-color: #fff;
+	padding: 32px;
+	display: grid;
+	place-items: center;
+	border-radius: 24px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+	width: 90%;
+	max-width: 400px;
+}
+
+/* === Upload Input Wrapper === */
+#image-input-wrapper {
+	position: relative;
+	width: 100%;
+	height: 220px;
+	border: 2px dashed #ccc;
+	border-radius: 16px;
+	background-color: #fafafa;
+	cursor: pointer;
+	text-align: center;
+	transition: 0.3s ease;
+	padding: 16px;
+	gap: 8px;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#image-input-wrapper:hover {
+	background-color: #f4f4f4;
+	border-color: #888;
+}
+
+#image-input {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	z-index: 10;
+	cursor: pointer;
+}
+
+/* === Upload UI Content === */
+.image-upload {
+	width: 100%;
+	max-width: 240px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.upload-icon {
+	display: block;
+	width: 24px;
+	height: 24px;
+	margin-bottom: 12px;
+}
+
+.title {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 10px;
+	color: #222;
+}
+
+.subtitle {
+	font-size: 13px;
+	line-height: 1.5;
+	color: #666;
+	max-width: 250px;
+	text-align: center;
+}
+
+/* === Image Preview === */
+
+.upload-preview {
+	margin-top: 24px;
+}
+
+.img {
+	width: 100%;
+	object-fit: contain;
+	border-radius: 12px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* === File Info Display === */
+.file-display {
+	margin-top: 8px;
+	padding: 16px;
+	width: 100%;
+	border: 1px solid #ddd;
+	border-radius: 12px;
+	background-color: #f9f9f9;
+	text-align: left;
+	position: relative;
+}
+
+.file-content-wrapper {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 12px;
+}
+
+.file-icon {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.file-name {
+	font-weight: 600;
+	font-size: 14px;
+	color: #333;
+	margin-bottom: 4px;
+}
+
+.file-size {
+	font-size: 13px;
+	color: #777;
+}
+
+/* === Cancel Button === */
+.cancel-btn {
+	outline: none;
+	background: transparent;
+	border: none;
+	position: absolute;
+	right: 12px;
+	top: 12px;
+	cursor: pointer;
+}

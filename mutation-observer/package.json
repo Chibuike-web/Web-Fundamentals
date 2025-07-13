@@ -1,0 +1,17 @@
+{
+	"name": "use-mutation-observer",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node server.js --watch"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.12.2",
+	"dependencies": {
+		"dotenv": "^16.5.0"
+	}
+}

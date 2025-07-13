@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Details</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div id="app"></div>
+		<script>
+			const root = document.getElementById("app");
+			const url = new URL(location);
+			const params = new URLSearchParams(url.search);
+			const id = params.get("id");
+
+			fetch(`http://localhost:3000/items?id=${id}`)
+				.then((res) => {
+					if (!res.ok) {
+						return res.text().then((errorData) => {
+							throw new Error(errorData || "Issue fetching data");
+						});
+					}
+					return res.json();
+				})
+				.then((data) => {
+					render(data);
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+
+			function render(data) {
+				root.innerHTML = data.content;
+			}
+		</script>
+	</body>
+</html>
