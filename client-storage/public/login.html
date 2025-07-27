@@ -54,13 +54,20 @@
 			input[type="email"],
 			input[type="password"],
 			input[type="text"] {
+				font-family: Inter;
 				width: 100%;
 				padding: 0.6rem;
-				font-size: clamp(1rem, 2vh, 1.25rem);
+				font-size: clamp(1rem, 2vh, 1.2rem);
 				border: 1px solid #ccc;
 				border-radius: 4px;
 			}
 
+			input[type="email"],
+			input[type="password"],
+			input[type="text"] ::placeholder {
+				font-family: Inter;
+				font-size: clamp(1rem, 2vh, 1.2rem);
+			}
 			#checkbox-wrapper {
 				display: flex;
 				align-items: center;
@@ -70,17 +77,19 @@
 			}
 
 			#submit-btn {
+				font-family: Inter;
 				padding: 0.7rem;
 				font-size: clamp(1rem, 2vh, 1.25rem);
-				background-color: #333;
+				background-color: #0070f3;
 				color: white;
 				border: none;
 				border-radius: 4px;
 				cursor: pointer;
+				transition: background 0.3s;
 			}
 
 			#submit-btn:hover {
-				background-color: #555;
+				background-color: #005bb5;
 			}
 
 			.error {
@@ -116,7 +125,7 @@
 				<div id="password-wrapper" class="input-container">
 					<div class="extra">
 						<label for="password">Password</label>
-						<button type="button" id="toggle-password">Show</button>
+						<button type="button" id="toggle-password"></button>
 					</div>
 					<input type="password" name="password" id="password" placeholder="Enter your password" />
 				</div>
@@ -150,8 +159,12 @@
 				password: "",
 			};
 
-			document.getElementById("toggle-password").onclick = () => {
-				password.type = password.type === "password" ? "text" : "password";
+			const toggleBtn = document.getElementById("toggle-password");
+			toggleBtn.textContent = "show";
+			toggleBtn.onclick = () => {
+				const isHidden = password.type === "password";
+				password.type = isHidden ? "text" : "password";
+				toggleBtn.textContent = isHidden ? "hide" : "show";
 			};
 
 			const handleSubmit = async (e) => {
@@ -210,21 +223,17 @@
 
 			function validateEmail(input) {
 				if (!input) return "Email is required";
-
 				if (input.trim().length < 6) {
 					return " Email must contain at least 6 characters";
 				}
-
 				return "";
 			}
 
 			function validatePassword(input) {
 				if (!input) return "Password is required";
-
 				if (input.length < 6) {
 					return " Password must contain at least 6 characters";
 				}
-
 				return "";
 			}
 
