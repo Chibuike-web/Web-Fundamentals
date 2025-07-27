@@ -46,15 +46,14 @@
 				flex-direction: column;
 				gap: 1.25rem;
 			}
-
-			label {
+			label[for="email"] {
 				display: block;
 				margin-bottom: 0.5rem;
 				font-size: clamp(0.9rem, 1.8vh, 1.2rem);
 			}
-
 			input[type="email"],
-			input[type="password"] {
+			input[type="password"],
+			input[type="text"] {
 				width: 100%;
 				padding: 0.6rem;
 				font-size: clamp(1rem, 2vh, 1.25rem);
@@ -89,30 +88,55 @@
 				color: red;
 				font-size: clamp(0.8rem, 2vh, 1rem);
 			}
+
+			.extra {
+				display: flex;
+				width: 100%;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+
+				& button {
+					background-color: transparent;
+					outline: none;
+					border: none;
+					font-size: 0.8rem;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<main>
 			<h1>Login</h1>
 			<form id="form">
-				<div id="email-wrapper">
+				<div id="email-wrapper" class="input-container">
 					<label for="email">Email Address</label>
 					<input type="email" name="email" id="email" placeholder="Enter your email" />
 				</div>
-				<div id="password-wrapper">
-					<label for="password">Password</label>
+				<div id="password-wrapper" class="input-container">
+					<div class="extra">
+						<label for="password">Password</label>
+						<button type="button" id="toggle-password">Show</button>
+					</div>
 					<input type="password" name="password" id="password" placeholder="Enter your password" />
 				</div>
-				<label for="checkbox" id="checkbox-wrapper">
+				<div id="checkbox-wrapper" class="input-container">
 					<input type="checkbox" name="checkbox" id="checkbox" />
-					<span>Remember me</span>
-				</label>
+					<label for="checkbox">Remember me</label>
+				</div>
 
 				<button type="submit" id="submit-btn">Login</button>
 			</form>
 		</main>
 
 		<script>
+			const alreadyLoggedInUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+			if (alreadyLoggedInUser) {
+				window.location.href = "/public/index.html";
+			}
+
+			let submit = false;
+
 			const form = document.getElementById("form");
 			const emailWrapper = document.getElementById("email-wrapper");
 			const passwordWrapper = document.getElementById("password-wrapper");
@@ -126,8 +150,14 @@
 				password: "",
 			};
 
+			document.getElementById("toggle-password").onclick = () => {
+				password.type = password.type === "password" ? "text" : "password";
+			};
+
 			const handleSubmit = async (e) => {
 				e.preventDefault();
+
+				submit = true;
 
 				let emailValue = email.value;
 				let passwordValue = password.value;
@@ -154,19 +184,26 @@
 				checkbox.checked = false;
 				console.log(data);
 
-				if (checkboxValue) {
-					localStorage.setItem("user", JSON.stringify(data));
-				} else {
-					sessionStorage.setItem("user", JSON.stringify(data));
-				}
-
 				try {
 					const res = await fetch("http://localhost:4000/login", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify(data),
 					});
-				} catch (error) {}
+
+					if (!res.ok) {
+						const err = await res.json();
+						alert(err?.error || "Login failed");
+						return;
+					}
+
+					const resData = await res.json();
+					const storage = checkboxValue ? localStorage : sessionStorage;
+					storage.setItem("user", JSON.stringify(resData.data));
+					location.href = "/public/index.html";
+				} catch (error) {
+					console.error(error);
+				}
 			};
 
 			form.addEventListener("submit", handleSubmit);
@@ -207,15 +244,15 @@
 						errors[input.id] = "";
 					}
 
-					const container = input.closest("div");
+					const container = input.closest(".input-container");
 					const errorEl = container?.querySelector(".error");
 					errorEl?.remove();
 				});
 
 				input.addEventListener("blur", () => {
-					const container = input.closest("div");
+					const container = input.closest(".input-container");
 					let error = "";
-
+					if (!submit) return;
 					switch (input.name) {
 						case "email":
 							error = validateEmail(input.value);

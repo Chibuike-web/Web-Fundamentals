@@ -27,7 +27,7 @@ const server = createServer((req, res) => {
 				console.log("Email:", email);
 				console.log("Password:", password);
 				res.writeHead(200, { "Content-Type": "application/json" });
-				res.end(JSON.stringify({ message: "Login successful" }));
+				res.end(JSON.stringify({ message: "Login successful", data: email }));
 			} catch (err) {
 				res.writeHead(400, { "Content-Type": "application/json" });
 				res.end(JSON.stringify({ error: "Invalid JSON" }));
