@@ -1,0 +1,120 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Inter, sans-serif;
+	background-color: #f9f9f9;
+	margin: 0;
+	display: grid;
+	place-items: center;
+}
+
+main {
+	max-width: 600px;
+	width: 100%;
+	margin: 0 auto;
+	border-radius: 12px;
+	padding: 1.5rem;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+input#input {
+	width: 70%;
+	padding: 0.6rem;
+	font-size: 1rem;
+	margin-right: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	height: 2.5rem;
+}
+
+button#add-todo {
+	width: 30%;
+	padding: 0.6rem 1rem;
+	font-size: 1rem;
+	background-color: #2b90d9;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	height: 2.5rem;
+}
+
+button#add-todo:hover {
+	background-color: #247bb5;
+}
+
+.todos-container {
+	list-style-type: none;
+	padding: 0;
+	margin-top: 1.5rem;
+	background-color: white;
+	border-radius: 1.2rem;
+}
+
+li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.8rem;
+	border-bottom: 1px solid #eee;
+}
+
+li:last-child {
+	border-bottom: none;
+}
+
+li > div:first-child {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+li > div:first-child p {
+	margin: 0;
+	font-size: 1rem;
+}
+
+li > div:last-child {
+	display: flex;
+	gap: 0.5rem;
+}
+
+li button {
+	padding: 0.4rem 0.8rem;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+
+li button:first-child {
+	background-color: #ffb347;
+	color: white;
+}
+
+li button:first-child:hover {
+	background-color: #e09e35;
+}
+
+li button:last-child {
+	background-color: #ff6b6b;
+	color: white;
+}
+
+li button:last-child:hover {
+	background-color: #d94c4c;
+}
