@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>JavaScript Geolocation</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Inter, sans-serif;
+				background: #f4f4f4;
+				color: #333;
+			}
+
+			#app {
+				display: grid;
+				place-items: center;
+				height: 100svh;
+				padding: 1rem;
+				text-align: center;
+			}
+
+			button {
+				padding: 0.75rem 1.5rem;
+				font-size: 1rem;
+				font-weight: bold;
+				border: none;
+				border-radius: 0.5rem;
+				background-color: #007bff;
+				color: white;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+			}
+
+			button:hover {
+				background-color: #0056b3;
+			}
+
+			#location p {
+				font-size: 1.1rem;
+				color: #555;
+				max-width: 400px;
+				margin-top: 1.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<main id="app">
+			<div id="location">
+				<button onclick="handleClick()">Find my Location</button>
+			</div>
+		</main>
+
+		<script>
+			const root = document.getElementById("app");
+			const locationContainer = document.getElementById("location");
+			const locationContent = document.createElement("p");
+			function handleClick() {
+				navigator.geolocation.getCurrentPosition(onSuccess, onError);
+			}
+
+			async function onSuccess(position) {
+				const { latitude, longitude } = position.coords;
+
+				try {
+					const res = await fetch("http://localhost:3210/locate", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ latitude, longitude }),
+					});
+
+					if (!res.ok) {
+						const errorData = await res.json();
+						console.log(errorData.error);
+						return;
+					}
+					const data = await res.json();
+					locationContent.textContent = data.location;
+					locationContainer.appendChild(locationContent);
+				} catch (err) {
+					console.error(err);
+				}
+			}
+
+			function onError() {
+				console.log("Failed to get your location");
+			}
+		</script>
+	</body>
+</html>
