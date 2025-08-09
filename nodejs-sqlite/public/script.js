@@ -60,8 +60,11 @@ function render() {
 		const listItem = document.createElement("li");
 		listItem.id = `todo-${id}`;
 		const leftContainer = document.createElement("div");
+		leftContainer.className = "left-container";
 		const checkInput = document.createElement("input");
 		checkInput.type = "checkbox";
+		checkInput.id = "checkbox";
+		checkInput.checked = completed;
 		const textValue = document.createElement("p");
 		textValue.textContent = text;
 		leftContainer.appendChild(checkInput);
@@ -69,6 +72,7 @@ function render() {
 		listItem.appendChild(leftContainer);
 
 		const rightContainer = document.createElement("div");
+		rightContainer.className = "right-container";
 		const editBtn = document.createElement("button");
 		editBtn.textContent = "Edit";
 		editBtn.className = "edit-btn";
@@ -108,7 +112,6 @@ addTodoBtn.onclick = () => {
 };
 
 root.addEventListener("click", (e) => {
-	e.preventDefault();
 	const target = /** @type {HTMLElement} */ (e.target);
 	if (target.classList.contains("delete-btn")) {
 		const deleteBtn = e.target;
@@ -119,6 +122,73 @@ root.addEventListener("click", (e) => {
 		const rawId = id.replace("todo-", "");
 
 		todoList = todoList.filter((/** @type {Todo} */ item) => item.id !== rawId);
+		localStorage.setItem("todo", JSON.stringify(todoList));
+	}
+
+	if (target.classList.contains("edit-btn")) {
+		const editBtn = e.target;
+		const todo = /** @type {HTMLElement} */ (editBtn).closest("li");
+		const rawId = todo.id.replace("todo-", "");
+
+		const leftContainer = /** @type {HTMLElement | null} */ (todo.querySelector(".left-container"));
+		const rightContainer = /** @type {HTMLElement | null} */ (
+			todo.querySelector(".right-container")
+		);
+
+		const p = leftContainer.querySelector("p");
+		if (p) p.style.display = "none";
+		if (rightContainer) rightContainer.style.display = "none";
+
+		const editInput = document.createElement("input");
+		editInput.type = "text";
+		editInput.className = "edit-input";
+		editInput.value = leftContainer?.textContent.trim() || "";
+		todo.appendChild(editInput);
+		editInput.focus();
+
+		const saveBtn = document.createElement("button");
+		saveBtn.className = "save-btn";
+		saveBtn.textContent = "Save";
+		todo.appendChild(saveBtn);
+
+		const cancelBtn = document.createElement("button");
+		cancelBtn.className = "cancel-btn";
+		cancelBtn.textContent = "Cancel";
+		todo.appendChild(cancelBtn);
+		cancelBtn.onclick = () => {
+			cleanupEdit();
+		};
+
+		saveBtn.onclick = () => {
+			const newTitle = editInput.value.trim();
+			if (newTitle === "") {
+				alert("Todo cannot be empty");
+				return;
+			}
+			todoList = todoList.map((item) => (item.id === rawId ? { ...item, text: newTitle } : item));
+			localStorage.setItem("todo", JSON.stringify(todoList));
+			if (p) p.textContent = newTitle;
+			cleanupEdit();
+		};
+
+		function cleanupEdit() {
+			editInput.remove();
+			saveBtn.remove();
+			cancelBtn.remove();
+			if (p) p.style.display = "";
+			if (rightContainer) rightContainer.style.display = "";
+		}
+	}
+});
+
+root.addEventListener("change", (e) => {
+	const target = /** @type {HTMLInputElement} */ (e.target);
+	if (target.type === "checkbox") {
+		const todo = target.closest("li");
+		const rawId = todo.id.replace("todo-", "");
+		todoList = todoList.map((item) =>
+			item.id === rawId ? { ...item, completed: target.checked } : item
+		);
 		localStorage.setItem("todo", JSON.stringify(todoList));
 	}
 });
