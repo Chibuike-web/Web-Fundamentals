@@ -23,22 +23,48 @@ async function downloadFile(url) {
 		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
 		const contentLength = response.headers.get("content-length");
-
-		/**@type {number} */
 		const totalSize = contentLength ? parseInt(contentLength, 10) : 0;
 
 		const reader = response.body.getReader();
-
 		const stream = new ReadableStream({
 			async start(controller) {
-				let laoded = 0;
+				let loaded = 0;
 				while (true) {
 					const { done, value } = await reader.read();
-					await delay(200);
+					await delay(50);
 
 					if (done) break;
+
+					loaded += value.length;
+					const progress = totalSize ? (loaded / totalSize) * 100 : 0;
+
+					progressBar.value = progress;
+					progressText.textContent = `${progress.toFixed(0)}%`;
+
+					controller.enqueue(value);
 				}
+
+				controller.close();
 			},
 		});
-	} catch (err) {}
+		await createDownloadLink(url, stream);
+		progressText.textContent = "Download Complete";
+	} catch (err) {
+		progressText.textContent = "Download Failed!";
+	} finally {
+		downloadBtn.disabled = false;
+	}
 }
+
+/**@param {string} url*/
+const createDownloadLink = async (url, stream) => {
+	const responseStream = new Response(stream);
+	const blob = await responseStream.blob();
+
+	const link = document.createElement("a");
+	link.href = URL.createObjectURL(blob);
+	link.download = url.split("/").pop();
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+};
