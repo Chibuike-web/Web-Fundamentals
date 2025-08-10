@@ -6,7 +6,7 @@
  */
 
 const root = document.getElementById("app");
-const input = document.getElementById("input");
+const input = /** @type {HTMLInputElement} */ (document.getElementById("input"));
 const addTodoBtn = document.getElementById("add-todo");
 
 /** @type {Todo[]} */
@@ -51,50 +51,53 @@ if (storedTodos) {
 
 const lists = document.createElement("ul");
 lists.className = "todos-container";
+
 function render() {
 	todoList.forEach(({ id, text, completed }) => {
 		const todo = document.getElementById(`todo-${id}`);
-		if (todo) {
-			return;
-		}
-		const listItem = document.createElement("li");
-		listItem.id = `todo-${id}`;
-		const leftContainer = document.createElement("div");
-		leftContainer.className = "left-container";
-		const checkInput = document.createElement("input");
-		checkInput.type = "checkbox";
-		checkInput.id = "checkbox";
-		checkInput.checked = completed;
-		const textValue = document.createElement("p");
-		textValue.textContent = text;
-		leftContainer.appendChild(checkInput);
-		leftContainer.appendChild(textValue);
-		listItem.appendChild(leftContainer);
+		if (!todo) {
+			const listItem = document.createElement("li");
+			listItem.id = `todo-${id}`;
+			const leftContainer = document.createElement("div");
+			leftContainer.className = "left-container";
+			const checkInput = document.createElement("input");
+			checkInput.type = "checkbox";
+			checkInput.id = `checkbox-${id}`;
+			checkInput.checked = completed;
 
-		const rightContainer = document.createElement("div");
-		rightContainer.className = "right-container";
-		const editBtn = document.createElement("button");
-		editBtn.textContent = "Edit";
-		editBtn.className = "edit-btn";
-		const deleteBtn = document.createElement("button");
-		deleteBtn.textContent = "Delete";
-		deleteBtn.className = "delete-btn";
-		rightContainer.appendChild(editBtn);
-		rightContainer.appendChild(deleteBtn);
-		listItem.appendChild(rightContainer);
-		lists.appendChild(listItem);
+			const textValue = document.createElement("p");
+			textValue.textContent = text;
+			if (completed) textValue.classList.add("muted");
+			leftContainer.appendChild(checkInput);
+			leftContainer.appendChild(textValue);
+			listItem.appendChild(leftContainer);
+
+			const rightContainer = document.createElement("div");
+			rightContainer.className = "right-container";
+			const editBtn = document.createElement("button");
+			editBtn.textContent = "Edit";
+			editBtn.className = "edit-btn";
+			const deleteBtn = document.createElement("button");
+			deleteBtn.textContent = "Delete";
+			deleteBtn.className = "delete-btn";
+			rightContainer.appendChild(editBtn);
+			rightContainer.appendChild(deleteBtn);
+			listItem.appendChild(rightContainer);
+			lists.appendChild(listItem);
+		}
+		if (todo) {
+			const p = todo.querySelector("p");
+			console.log(p);
+		}
 	});
 }
-render();
+
 root.appendChild(lists);
+render();
 
-function addTodo() {
-	/** @type {HTMLInputElement} */
-	const inputEl = /** @type {HTMLInputElement} */ (input);
-	const inputValue = inputEl.value.trim();
-
+addTodoBtn.onclick = () => {
+	const inputValue = input.value.trim();
 	if (!inputValue) return;
-
 	const newTodo = {
 		id: crypto.randomUUID(),
 		text: inputValue,
@@ -102,12 +105,8 @@ function addTodo() {
 	};
 
 	todoList.push(newTodo);
+	input.value = "";
 	localStorage.setItem("todo", JSON.stringify(todoList));
-	inputEl.value = "";
-}
-
-addTodoBtn.onclick = () => {
-	addTodo();
 	render();
 };
 
@@ -116,10 +115,8 @@ root.addEventListener("click", (e) => {
 	if (target.classList.contains("delete-btn")) {
 		const deleteBtn = e.target;
 		const todo = /** @type {HTMLElement} */ (deleteBtn).closest("li");
-		const id = todo.id;
+		const rawId = todo.id.replace("todo-", "");
 		todo.remove();
-
-		const rawId = id.replace("todo-", "");
 
 		todoList = todoList.filter((/** @type {Todo} */ item) => item.id !== rawId);
 		localStorage.setItem("todo", JSON.stringify(todoList));
@@ -136,25 +133,28 @@ root.addEventListener("click", (e) => {
 		);
 
 		const p = leftContainer.querySelector("p");
-		if (p) p.style.display = "none";
-		if (rightContainer) rightContainer.style.display = "none";
+		if (p) p.classList.add("hide");
+		if (rightContainer) rightContainer.classList.add("hide");
 
 		const editInput = document.createElement("input");
 		editInput.type = "text";
 		editInput.className = "edit-input";
-		editInput.value = leftContainer?.textContent.trim() || "";
+		editInput.value = p.textContent.trim() || "";
 		todo.appendChild(editInput);
 		editInput.focus();
+
+		const btnContainer = document.createElement("div");
 
 		const saveBtn = document.createElement("button");
 		saveBtn.className = "save-btn";
 		saveBtn.textContent = "Save";
-		todo.appendChild(saveBtn);
+		btnContainer.appendChild(saveBtn);
+		btnContainer.className = "right-container";
 
 		const cancelBtn = document.createElement("button");
 		cancelBtn.className = "cancel-btn";
 		cancelBtn.textContent = "Cancel";
-		todo.appendChild(cancelBtn);
+		btnContainer.appendChild(cancelBtn);
 		cancelBtn.onclick = () => {
 			cleanupEdit();
 		};
@@ -170,13 +170,14 @@ root.addEventListener("click", (e) => {
 			if (p) p.textContent = newTitle;
 			cleanupEdit();
 		};
+		todo.appendChild(btnContainer);
 
 		function cleanupEdit() {
 			editInput.remove();
 			saveBtn.remove();
 			cancelBtn.remove();
-			if (p) p.style.display = "";
-			if (rightContainer) rightContainer.style.display = "";
+			if (p) p.classList.remove("hide");
+			if (rightContainer) rightContainer.classList.remove("hide");
 		}
 	}
 });
@@ -189,6 +190,12 @@ root.addEventListener("change", (e) => {
 		todoList = todoList.map((item) =>
 			item.id === rawId ? { ...item, completed: target.checked } : item
 		);
+
 		localStorage.setItem("todo", JSON.stringify(todoList));
+		const p = todo.querySelector("p");
+		if (p) {
+			if (target.checked) p.classList.add("muted");
+			else p.classList.remove("muted");
+		}
 	}
 });
