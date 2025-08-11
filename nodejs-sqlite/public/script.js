@@ -115,6 +115,8 @@ root.addEventListener("click", (e) => {
 	if (target.classList.contains("delete-btn")) {
 		const deleteBtn = e.target;
 		const todo = /** @type {HTMLElement} */ (deleteBtn).closest("li");
+		const checkbox = /**@type {HTMLInputElement} */ (todo.querySelector("input[type='checkbox']"));
+		if (!checkbox || !checkbox.checked) return;
 		const rawId = todo.id.replace("todo-", "");
 		todo.remove();
 
@@ -178,6 +180,7 @@ root.addEventListener("click", (e) => {
 			cancelBtn.remove();
 			if (p) p.classList.remove("hide");
 			if (rightContainer) rightContainer.classList.remove("hide");
+			if (btnContainer) btnContainer.remove();
 		}
 	}
 });
