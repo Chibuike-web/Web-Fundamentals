@@ -77,9 +77,11 @@ function render() {
 			const editBtn = document.createElement("button");
 			editBtn.textContent = "Edit";
 			editBtn.className = "edit-btn";
+
 			const deleteBtn = document.createElement("button");
 			deleteBtn.textContent = "Delete";
 			deleteBtn.className = "delete-btn";
+			deleteBtn.disabled = true;
 			rightContainer.appendChild(editBtn);
 			rightContainer.appendChild(deleteBtn);
 			listItem.appendChild(rightContainer);
@@ -116,7 +118,7 @@ root.addEventListener("click", (e) => {
 		const deleteBtn = e.target;
 		const todo = /** @type {HTMLElement} */ (deleteBtn).closest("li");
 		const checkbox = /**@type {HTMLInputElement} */ (todo.querySelector("input[type='checkbox']"));
-		if (!checkbox || !checkbox.checked) return;
+		if (!checkbox.checked) return;
 		const rawId = todo.id.replace("todo-", "");
 		todo.remove();
 
@@ -127,6 +129,8 @@ root.addEventListener("click", (e) => {
 	if (target.classList.contains("edit-btn")) {
 		const editBtn = e.target;
 		const todo = /** @type {HTMLElement} */ (editBtn).closest("li");
+		const checkbox = /**@type {HTMLInputElement} */ (todo.querySelector("input[type='checkbox']"));
+		if (checkbox.checked) return;
 		const rawId = todo.id.replace("todo-", "");
 
 		const leftContainer = /** @type {HTMLElement | null} */ (todo.querySelector(".left-container"));
@@ -200,5 +204,9 @@ root.addEventListener("change", (e) => {
 			if (target.checked) p.classList.add("muted");
 			else p.classList.remove("muted");
 		}
+		const deleteBtn = /** @type {HTMLInputElement} */ (todo.querySelector(".delete-btn"));
+		const editBtn = /** @type {HTMLInputElement} */ (todo.querySelector(".edit-btn"));
+		if (deleteBtn) deleteBtn.disabled = !target.checked;
+		if (editBtn) editBtn.disabled = target.checked;
 	}
 });

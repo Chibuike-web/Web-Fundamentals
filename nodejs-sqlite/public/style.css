@@ -158,3 +158,13 @@ li:last-child {
 .hide {
 	display: none;
 }
+
+.delete-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.edit-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
