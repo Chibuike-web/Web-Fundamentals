@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Advanced Function - Search bar</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Inter, sans-serif;
+				background: #f9f9f9;
+				color: #333;
+				padding: 2rem;
+			}
+
+			.wrapper {
+				max-width: 600px;
+				margin: 0 auto;
+			}
+
+			.search-form {
+				width: 100%;
+				display: flex;
+				margin-bottom: 1.5rem;
+			}
+
+			.search-form input[type="search"] {
+				flex: 1;
+				padding: 0.75rem 1rem;
+				border: 1px solid #ccc;
+				border-radius: 12px;
+				font-size: 1rem;
+				outline: none;
+				transition: all 0.2s ease;
+			}
+
+			.search-form input[type="search"]:focus {
+				border-color: #007bff;
+				box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+			}
+
+			.results {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.result-item {
+				background: #fff;
+				padding: 1rem;
+				border-radius: 12px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+				transition: transform 0.2s ease;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.result-item:hover {
+				transform: translateY(-3px);
+			}
+
+			.result-heading {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+
+				@media (max-width: 500px) {
+					flex-direction: column;
+					row-gap: 12px;
+				}
+			}
+
+			.result-category {
+				font-size: 13px;
+				border: 1px solid #e6e6e6;
+				border-radius: 999px;
+				padding-inline: 8px;
+				padding-block: 6px;
+				font-weight: 600;
+			}
+		</style>
+	</head>
+	<body>
+		<main class="wrapper">
+			<form class="search-form">
+				<input type="search" id="search" placeholder="Search items..." name="search" />
+			</form>
+		</main>
+
+		<script>
+			const searchInput = document.getElementById("search");
+			const resultsContainer = document.createElement("div");
+			resultsContainer.className = "results";
+			document.querySelector(".wrapper").appendChild(resultsContainer);
+
+			async function displayResult(query) {
+				const res = await fetch("http://localhost:4020/items");
+				const data = await res.json();
+
+				const items = data.results;
+
+				const filtered = items.filter(
+					(i) =>
+						i.title.toLowerCase().includes(query) ||
+						i.category.toLowerCase().includes(query) ||
+						i.description.toLowerCase().includes(query)
+				);
+
+				resultsContainer.innerHTML = "";
+
+				resultsContainer.innerHTML = filtered
+					.map((item) => {
+						const { title, category, description } = item;
+						return /*html*/ `
+							<div class="result-item">
+								<div class="result-heading">
+									<h3 class="result-title">${title}</h3>
+									<p class="result-category">${item.category}</p>
+								</div>
+								<p class="result-description">${item.description}</p>
+							</div>
+						`;
+					})
+					.join("");
+			}
+			searchInput.addEventListener("input", (e) => {
+				const query = e.target.value.toLowerCase().trim();
+				debounceSearch(query);
+			});
+
+			const debounceSearch = debounce(displayResult);
+			function debounce(callback) {
+				let timerId;
+				return (...args) => {
+					if (timerId) {
+						clearTimeout(timerId);
+					}
+					timerId = setTimeout(() => callback(...args), 500);
+				};
+			}
+		</script>
+	</body>
+</html>

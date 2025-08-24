@@ -1,0 +1,34 @@
+{
+	"results": [
+		{
+			"id": 1,
+			"title": "JavaScript Basics",
+			"category": "Programming",
+			"description": "Learn the fundamentals of JavaScript including variables, functions, and loops."
+		},
+		{
+			"id": 2,
+			"title": "Advanced JavaScript Functions",
+			"category": "Programming",
+			"description": "Understand closures, currying, memoization, and higher-order functions."
+		},
+		{
+			"id": 3,
+			"title": "Web Accessibility",
+			"category": "Web Development",
+			"description": "Guidelines and techniques to make websites usable for everyone."
+		},
+		{
+			"id": 4,
+			"title": "Node.js API Development",
+			"category": "Backend",
+			"description": "How to build RESTful APIs using Node.js and Express."
+		},
+		{
+			"id": 5,
+			"title": "CSS Animations",
+			"category": "Design",
+			"description": "Add motion and interactivity to your web pages with CSS transitions and animations."
+		}
+	]
+}
