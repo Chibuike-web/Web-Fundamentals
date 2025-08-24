@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import { readFileSync } from "fs";
 
+const data = JSON.parse(readFileSync("./data.json"));
 const server = createServer((req, res) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
@@ -12,14 +13,21 @@ const server = createServer((req, res) => {
 	}
 
 	const url = new URL(req.url, `http://${req.headers.host}`);
-	console.log(url);
 	const pathname = url.pathname;
+	const searchParams = url.searchParams;
 
 	if (req.method === "GET" && pathname === "/items") {
-		const data = JSON.parse(readFileSync("./data.json"));
-		res.writeHead(200, { "Content-Type": "application/json" });
-		res.end(JSON.stringify(data));
-		return;
+		if (searchParams.has("id")) {
+			const id = searchParams.get("id");
+			const item = data.results.find((i) => i.id === Number(id));
+			res.writeHead(200, { "Content-Type": "application/json" });
+			res.end(JSON.stringify(item));
+			return;
+		} else {
+			res.writeHead(200, { "Content-Type": "application/json" });
+			res.end(JSON.stringify(data));
+			return;
+		}
 	} else {
 		res.writeHead(500, { "Content-Type": "text/plain" });
 		res.end("Method Not Allowed");

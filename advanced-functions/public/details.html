@@ -21,6 +21,34 @@
 	<script>
 		const url = window.location;
 		const searchParams = new URLSearchParams(url.search);
-		console.log(searchParams.get("category"));
+		const container = document.createElement("div");
+		const id = Number(searchParams.get("id"));
+
+		(async function fetchData() {
+			try {
+				const res = await fetch(`http://localhost:4020/items?id=${id}`);
+				const data = await res.json();
+				if (!res.ok) {
+					throw new Error("Issue fetching item");
+				}
+				render(data);
+			} catch (err) {
+				console.error(err);
+			}
+		})();
+
+		function render(item) {
+			const { title, category, description } = item;
+			container.innerHTML = /* html */ `
+			<div class="result-item">
+				<div class="result-heading">
+					<h3 class="result-title">${title}</h3>
+					<p class="result-category">${item.category}</p>
+				</div>
+				<p class="result-description">${item.description}</p>
+			</div>`;
+		}
+
+		document.body.appendChild(container);
 	</script>
 </html>

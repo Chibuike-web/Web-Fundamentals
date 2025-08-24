@@ -11,6 +11,11 @@
 				box-sizing: border-box;
 			}
 
+			a {
+				color: unset;
+				text-decoration: unset;
+			}
+
 			body {
 				font-family: Inter, sans-serif;
 				background: #f9f9f9;
@@ -99,37 +104,30 @@
 			resultsContainer.className = "results";
 			document.querySelector(".wrapper").appendChild(resultsContainer);
 
-			async function displayResult(query) {
+			let items = [];
+			let filtered = [];
+			(async function fetchData() {
 				const res = await fetch("http://localhost:4020/items");
 				const data = await res.json();
+				items = data.results;
+			})();
 
-				const items = data.results;
-
-				const filtered = items.filter(
+			async function displayResult(query) {
+				if (!query) {
+					resultsContainer.innerHTML = "";
+					return;
+				}
+				filtered = items.filter(
 					(i) =>
 						i.title.toLowerCase().includes(query) ||
 						i.category.toLowerCase().includes(query) ||
 						i.description.toLowerCase().includes(query)
 				);
 
-				resultsContainer.innerHTML = "";
-
-				resultsContainer.innerHTML = filtered
-					.map((item) => {
-						const { title, category, description } = item;
-						return /*html*/ `
-							<div class="result-item">
-								<div class="result-heading">
-									<h3 class="result-title">${title}</h3>
-									<p class="result-category">${item.category}</p>
-								</div>
-								<p class="result-description">${item.description}</p>
-							</div>
-						`;
-					})
-					.join("");
+				renderStoredResults();
 			}
 			searchInput.addEventListener("input", (e) => {
+				e.preventDefault();
 				const query = e.target.value.toLowerCase().trim();
 				debounceSearch(query);
 			});
@@ -143,6 +141,24 @@
 					}
 					timerId = setTimeout(() => callback(...args), 500);
 				};
+			}
+
+			function renderStoredResults() {
+				if (filtered.length > 0) {
+					resultsContainer.innerHTML = filtered
+						.map((item) => {
+							const { id, title, category, description } = item;
+							return /*html*/ `
+						<a href="details.html?id=${id}" class="result-item">
+							<div class="result-heading">
+								<h3 class="result-title">${title}</h3>
+								<p class="result-category">${category}</p>
+							</div>
+							<p class="result-description">${description}</p>
+						</a>`;
+						})
+						.join("");
+				}
 			}
 		</script>
 	</body>
