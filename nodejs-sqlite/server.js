@@ -1,18 +1,10 @@
-import { DatabaseSync } from "node:sqlite";
+import { initDb, closeDb, addTodo, getTodos } from "./db/todos.js";
 
-const db = new DatabaseSync("contacts.db");
-db.exec(`
-   create table if not exists contacts (
-        id integer primary key, 
-        firstName text not null, 
-        lastName text not null, 
-        email text not null    
-   )`);
+initDb("todos.db");
 
-const stmt = db.prepare(`INSERT INTO contacts (firstName, lastName, email)
-  VALUES (?, ?, ?)`);
+const { lastInsertRowid } = addTodo("Run a race");
+console.log(`Inserted todo id: ${lastInsertRowid}`);
 
-const { lastInsertRowid } = stmt.run("Jane", "Doe", "jane.doe@example.com");
+console.log(getTodos());
 
-console.log(`Inserted contact id: ${lastInsertRowid}`);
-if (db) db.close();
+closeDb();
