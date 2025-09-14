@@ -80,6 +80,7 @@ button#add-todo:hover {
 li {
 	display: flex;
 	justify-content: space-between;
+	gap: 24px;
 	align-items: center;
 	padding: 0.8rem;
 	border-bottom: 1px solid #eee;
@@ -167,4 +168,19 @@ li:last-child {
 .edit-btn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+.edit-input {
+	padding: 0.6rem;
+	font-size: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	height: 2rem;
+	outline: none;
+}
+
+.a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+	outline: 3px solid #2b90d9;
+	outline-offset: 3px;
 }

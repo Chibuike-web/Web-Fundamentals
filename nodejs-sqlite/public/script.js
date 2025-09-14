@@ -1,15 +1,7 @@
-/**
- * @typedef {Object} Todo
- * @property {string} id
- * @property {string} text
- * @property {boolean} completed
- */
-
 const root = document.getElementById("app");
-const input = /** @type {HTMLInputElement} */ (document.getElementById("input"));
+const input = document.getElementById("input");
 const addTodoBtn = document.getElementById("add-todo");
 
-/** @type {Todo[]} */
 const initialTodoList = [
 	{
 		id: crypto.randomUUID(),
@@ -38,7 +30,6 @@ const initialTodoList = [
 	},
 ];
 
-/** @type {Todo[]} */
 const storedTodos = JSON.parse(localStorage.getItem("todo"));
 let todoList;
 
@@ -75,13 +66,14 @@ function render() {
 			const rightContainer = document.createElement("div");
 			rightContainer.className = "right-container";
 			const editBtn = document.createElement("button");
+			editBtn.disabled = completed;
 			editBtn.textContent = "Edit";
 			editBtn.className = "edit-btn";
 
 			const deleteBtn = document.createElement("button");
 			deleteBtn.textContent = "Delete";
+			deleteBtn.disabled = !completed;
 			deleteBtn.className = "delete-btn";
-			deleteBtn.disabled = true;
 			rightContainer.appendChild(editBtn);
 			rightContainer.appendChild(deleteBtn);
 			listItem.appendChild(rightContainer);
@@ -113,30 +105,28 @@ addTodoBtn.onclick = () => {
 };
 
 root.addEventListener("click", (e) => {
-	const target = /** @type {HTMLElement} */ (e.target);
+	const target = e.target;
 	if (target.classList.contains("delete-btn")) {
 		const deleteBtn = e.target;
-		const todo = /** @type {HTMLElement} */ (deleteBtn).closest("li");
-		const checkbox = /**@type {HTMLInputElement} */ (todo.querySelector("input[type='checkbox']"));
+		const todo = deleteBtn.closest("li");
+		const checkbox = todo.querySelector("input[type='checkbox']");
 		if (!checkbox.checked) return;
 		const rawId = todo.id.replace("todo-", "");
 		todo.remove();
 
-		todoList = todoList.filter((/** @type {Todo} */ item) => item.id !== rawId);
+		todoList = todoList.filter((item) => item.id !== rawId);
 		localStorage.setItem("todo", JSON.stringify(todoList));
 	}
 
 	if (target.classList.contains("edit-btn")) {
 		const editBtn = e.target;
-		const todo = /** @type {HTMLElement} */ (editBtn).closest("li");
-		const checkbox = /**@type {HTMLInputElement} */ (todo.querySelector("input[type='checkbox']"));
+		const todo = editBtn.closest("li");
+		const checkbox = todo.querySelector("input[type='checkbox']");
 		if (checkbox.checked) return;
 		const rawId = todo.id.replace("todo-", "");
 
-		const leftContainer = /** @type {HTMLElement | null} */ (todo.querySelector(".left-container"));
-		const rightContainer = /** @type {HTMLElement | null} */ (
-			todo.querySelector(".right-container")
-		);
+		const leftContainer = todo.querySelector(".left-container");
+		const rightContainer = todo.querySelector(".right-container");
 
 		const p = leftContainer.querySelector("p");
 		if (p) p.classList.add("hide");
@@ -146,7 +136,7 @@ root.addEventListener("click", (e) => {
 		editInput.type = "text";
 		editInput.className = "edit-input";
 		editInput.value = p.textContent.trim() || "";
-		todo.appendChild(editInput);
+		leftContainer.appendChild(editInput);
 		editInput.focus();
 
 		const btnContainer = document.createElement("div");
@@ -190,9 +180,10 @@ root.addEventListener("click", (e) => {
 });
 
 root.addEventListener("change", (e) => {
-	const target = /** @type {HTMLInputElement} */ (e.target);
+	const target = e.target;
 	if (target.type === "checkbox") {
 		const todo = target.closest("li");
+		console.log(target.checked);
 		const rawId = todo.id.replace("todo-", "");
 		todoList = todoList.map((item) =>
 			item.id === rawId ? { ...item, completed: target.checked } : item
@@ -204,8 +195,8 @@ root.addEventListener("change", (e) => {
 			if (target.checked) p.classList.add("muted");
 			else p.classList.remove("muted");
 		}
-		const deleteBtn = /** @type {HTMLInputElement} */ (todo.querySelector(".delete-btn"));
-		const editBtn = /** @type {HTMLInputElement} */ (todo.querySelector(".edit-btn"));
+		const deleteBtn = todo.querySelector(".delete-btn");
+		const editBtn = todo.querySelector(".edit-btn");
 		if (deleteBtn) deleteBtn.disabled = !target.checked;
 		if (editBtn) editBtn.disabled = target.checked;
 	}
