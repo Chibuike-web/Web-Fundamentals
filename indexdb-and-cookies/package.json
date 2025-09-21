@@ -1,0 +1,13 @@
+{
+	"name": "indexdb-and-cookies",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node --watch server.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Log in</title>
+
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Inter", sans-serif;
+				background-color: #f9f9f9;
+				color: #333;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+
+			main {
+				width: 100%;
+				max-width: 400px;
+				background: #fff;
+				padding: 2rem;
+				border: 1px solid #ddd;
+				border-radius: 16px;
+			}
+
+			h1 {
+				font-size: 1.8rem;
+				margin-bottom: 0.5rem;
+				color: #222;
+			}
+
+			p {
+				font-size: 0.95rem;
+				margin-bottom: 1.5rem;
+				color: #666;
+			}
+
+			.input-container {
+				display: flex;
+				flex-direction: column;
+			}
+			form > div + div {
+				margin-top: 1.2rem;
+			}
+			label {
+				margin-bottom: 0.4rem;
+				font-size: 0.9rem;
+				color: #444;
+			}
+
+			input {
+				padding-inline: 0.8rem;
+				height: 40px;
+				font-size: 0.95rem;
+				border: 1px solid #bbb;
+				border-radius: 8px;
+				background-color: #f9f9f9;
+				color: #333;
+				outline: none;
+			}
+
+			input:focus {
+				border-color: #999;
+				background-color: #eee;
+			}
+
+			a:focus-visible,
+			button:focus-visible,
+			input:focus-visible {
+				outline: 4px solid rgba(0, 0, 0, 0.1);
+			}
+
+			button {
+				width: 100%;
+				padding-inline: 0.8rem;
+				height: 40px;
+				font-size: 1rem;
+				background-color: #555;
+				color: #fff;
+				border: none;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: background 0.2s ease-in-out;
+				margin-top: 2.5rem;
+			}
+
+			.auth-switch {
+				text-align: center;
+				margin-top: 10px;
+			}
+
+			button:hover {
+				background-color: #444;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>Log in</h1>
+			<p>Join us today and start organizing your notes with ease.</p>
+
+			<form class="form">
+				<div class="input-container" id="email-container">
+					<label for="email">Email</label>
+					<input type="email" id="email" name="email" placeholder="Enter your email" required />
+				</div>
+				<div class="input-container" id="password-container">
+					<label for="password">Password</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						placeholder="Enter your password"
+						required
+					/>
+				</div>
+				<button>Log in</button>
+				<p class="auth-switch">Don't have an account? <a href="/public/signup.html">Sign up</a></p>
+			</form>
+		</main>
+
+		<script>
+			const form = document.querySelector(".form");
+			const emailInput = document.getElementById("email");
+			const passwordInput = document.getElementById("password");
+
+			const errors = {
+				email: "",
+				password: "",
+			};
+
+			let emailValue;
+			let passwordValue;
+
+			form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				emailValue = emailInput.value;
+				passwordValue = passwordInput.value;
+
+				const user = {
+					email: emailValue,
+					password: passwordValue,
+				};
+				try {
+					const res = await fetch("http://localhost:4284/login", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(user),
+						credentials: "include",
+					});
+
+					const data = await res.json();
+
+					if (!res.ok) {
+						throw new Error(data.error);
+					}
+
+					console.log("Log in success");
+					emailInput.value = "";
+					passwordInput.value = "";
+					window.location.href = "/public/index.html";
+				} catch (error) {
+					console.error(error);
+				}
+			});
+		</script>
+	</body>
+</html>
