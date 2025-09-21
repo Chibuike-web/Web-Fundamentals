@@ -7,7 +7,7 @@ const sessions = new Map();
 const users = [];
 
 const server = createServer((req, res) => {
-	res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+	res.setHeader("Access-Control-Allow-Origin", "http://localhost:5500");
 	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -106,7 +106,7 @@ const server = createServer((req, res) => {
 				});
 
 				res.setHeader("Set-Cookie", [
-					`sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Strict`,
+					`sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
 				]);
 				res.writeHead(200, { "Content-Type": "application/json" });
 
@@ -119,8 +119,36 @@ const server = createServer((req, res) => {
 			}
 		});
 	} else if (req.method === "GET" && pathname === "/user") {
+		console.log("Cookies header:", req.headers.cookie);
+
 		const cookies = req.headers.cookie;
-		console.log(cookies);
+		if (!cookies) {
+			res.writeHead(401, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ error: "No cookies sent" }));
+			return;
+		}
+
+		const cookieObj = Object.fromEntries(
+			cookies.split(";").map((c) => {
+				const [key, value] = c.trim().split("=");
+				return [key, value];
+			})
+		);
+
+		console.log(cookieObj);
+
+		const sessionId = cookieObj.sessionId;
+		const session = getSession(sessionId);
+
+		if (!session) {
+			res.writeHead(401, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ error: "Invalid or expired session" }));
+			return;
+		}
+
+		const user = users.find((u) => u.id === session.userId);
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ id: user.id, name: user.name, email: user.email }));
 	} else {
 		res.writeHead(404, { "Content-Type": "application/json" });
 		res.end(JSON.stringify({ error: "Route not found" }));
