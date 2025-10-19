@@ -36,30 +36,45 @@ tabPanels.innerHTML = tabData
 tabsContainer.appendChild(tabList);
 tabsContainer.appendChild(tabPanels);
 
-tabsContainer.addEventListener("click", (e) => {
-	if (e.target.matches(".tab-btn")) {
-		const tabBtns = document.querySelectorAll(".tab-btn");
-
-		tabBtns.forEach((btn) => btn.classList.remove("active"));
-
-		e.target.classList.add("active");
-		const tabPanels = document.querySelectorAll(".tab-panel");
-		tabPanels.forEach((panel) => {
-			const tabIndex = e.target.id.split("tab-")[1];
-			const panelIndex = panel.id.split("panel-")[1];
-			if (tabIndex == panelIndex) {
-				panel.classList.remove("hidden");
-				panel.setAttribute("aria-hidden", "false");
-			} else {
-				panel.classList.add("hidden");
-				panel.setAttribute("aria-hidden", "true");
-			}
-		});
-	}
-});
+let selectedIndex = 0;
 
 const tabButtons = document.querySelectorAll(".tab-btn");
 
-tabButtons.forEach((btn) => {
-	btn.addEventListener("keydown", (e) => {});
+tabButtons.forEach((btn, index) => {
+	btn.addEventListener("click", () => {
+		selectedIndex = index;
+		updateTabs();
+	});
 });
+
+tabButtons.forEach((btn, index) => {
+	btn.addEventListener("keydown", (e) => {
+		selectedIndex = index;
+		if (e.key === "ArrowRight") {
+			selectedIndex = index < tabButtons.length - 1 ? index + 1 : 0;
+		} else if (e.key === "ArrowLeft") {
+			selectedIndex = index > 0 ? index - 1 : tabButtons.length - 1;
+		} else if (e.key === "Home") {
+			selectedIndex = 0;
+		} else if (e.key === "End") {
+			selectedIndex = tabButtons.length - 1;
+		}
+		updateTabs();
+		tabButtons[selectedIndex].focus();
+	});
+});
+
+function updateTabs() {
+	tabButtons.forEach((btn, i) => {
+		const isActive = i === selectedIndex;
+		btn.classList.toggle("active", isActive);
+		btn.setAttribute("aria-selected", isActive);
+	});
+
+	const tabPanels = document.querySelectorAll(".tab-panel");
+	tabPanels.forEach((panel, i) => {
+		const isActive = i === selectedIndex;
+		panel.classList.toggle("hidden", !isActive);
+		panel.setAttribute("aria-hidden", !isActive);
+	});
+}
