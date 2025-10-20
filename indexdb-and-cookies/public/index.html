@@ -4,10 +4,22 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Notes App</title>
-
 		<link rel="stylesheet" href="style.css" />
 	</head>
+
 	<body>
-		<script src="./script.js"></script>
+		<main class="notes-app">
+			<h1 class="app-title">Notes App</h1>
+
+			<div class="note-input-section">
+				<label for="note-input" class="note-label">Enter your note:</label>
+				<textarea id="note-input" class="note-textarea" rows="6"></textarea>
+				<button id="add-note-btn" class="add-note-btn">Add Note</button>
+			</div>
+
+			<ul id="notes-container" class="notes-list"></ul>
+		</main>
+
+		<script src="script.js"></script>
 	</body>
 </html>

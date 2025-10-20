@@ -1,0 +1,89 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Inter", sans-serif;
+	background-color: #fafafa;
+	color: #111;
+}
+
+.notes-app {
+	max-width: 600px;
+	margin: 2rem auto;
+	padding: 1rem;
+}
+
+.app-title {
+	text-align: center;
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 1.5rem;
+}
+
+.note-input-section {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 2rem;
+}
+
+.note-label {
+	font-weight: 500;
+	font-size: 1.2rem;
+}
+
+.note-textarea {
+	resize: vertical;
+	border-radius: 8px;
+	padding: 10px 14px;
+	min-height: 4rem;
+	font-family: "Inter", sans-serif;
+	line-height: 1.5;
+	border: 1px solid #ccc;
+	transition: border 0.2s ease;
+	field-sizing: content;
+}
+
+.note-textarea:focus {
+	outline: none;
+	border-color: #999;
+}
+
+.note-textarea:focus-visible {
+	outline: 3px solid #e6e6e6;
+	outline-offset: 2px;
+}
+
+.add-note-btn {
+	background-color: #111;
+	color: #fff;
+	padding: 10px;
+	border: none;
+	border-radius: 24px;
+	font-family: "Inter", sans-serif;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.add-note-btn:hover {
+	background-color: #333;
+}
+
+.notes-list {
+	margin-top: 2rem;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.notes-list li {
+	background-color: #f2f2f2;
+	padding: 16px 24px;
+	border-radius: 8px;
+	font-size: 1rem;
+	line-height: 1.4;
+}
