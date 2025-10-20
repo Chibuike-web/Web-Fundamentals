@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { getSession } from "./session";
 
 const PORT = 4284;
 
@@ -23,11 +24,7 @@ const server = createServer((req, res) => {
 
 	if (req.method === "POST" && pathname === "/signup") {
 		let body = "";
-
-		req.on("data", (chunk) => {
-			body += chunk;
-		});
-
+		req.on("data", (chunk) => (body += chunk));
 		req.on("end", () => {
 			try {
 				if (!body) {
@@ -71,9 +68,7 @@ const server = createServer((req, res) => {
 	} else if (req.method === "POST" && pathname === "/login") {
 		let body = "";
 
-		req.on("data", (chunk) => {
-			body += chunk;
-		});
+		req.on("data", (chunk) => (body += chunk));
 
 		req.on("end", () => {
 			try {
@@ -100,10 +95,7 @@ const server = createServer((req, res) => {
 
 				const maxAge = 3600;
 				const sessionId = crypto.randomUUID();
-				sessions.set(sessionId, {
-					userId: user.id,
-					expiresAt: Date.now() + 3600 * 1000,
-				});
+				sessions.set(sessionId, { userId: user.id, expiresAt: Date.now() + 3600 * 1000 });
 
 				res.setHeader("Set-Cookie", [
 					`sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
@@ -158,14 +150,3 @@ const server = createServer((req, res) => {
 server.listen(PORT, () => {
 	console.log(`server running in http://localhost:${PORT}`);
 });
-
-function getSession(sessionId) {
-	const session = sessions.get(sessionId);
-	if (!session) return null;
-
-	if (Date.now() > session.expiresAt) {
-		sessions.delete(sessionId);
-		return null;
-	}
-	return session;
-}
