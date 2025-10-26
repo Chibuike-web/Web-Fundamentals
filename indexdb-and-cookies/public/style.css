@@ -87,3 +87,11 @@ body {
 	font-size: 1rem;
 	line-height: 1.4;
 }
+
+#loading {
+	inset: 0;
+	background: white;
+	position: fixed;
+	display: grid;
+	place-items: center;
+}
