@@ -1,9 +1,7 @@
 import { createServer } from "node:http";
-import { getSession } from "./session";
+import { getSession, sessions } from "./session.js";
 
 const PORT = 4284;
-
-const sessions = new Map();
 
 const users = [];
 
@@ -111,8 +109,6 @@ const server = createServer((req, res) => {
 			}
 		});
 	} else if (req.method === "GET" && pathname === "/user") {
-		console.log("Cookies header:", req.headers.cookie);
-
 		const cookies = req.headers.cookie;
 		if (!cookies) {
 			res.writeHead(401, { "Content-Type": "application/json" });
@@ -126,8 +122,6 @@ const server = createServer((req, res) => {
 				return [key, value];
 			})
 		);
-
-		console.log(cookieObj);
 
 		const sessionId = cookieObj.sessionId;
 		const session = getSession(sessionId);
