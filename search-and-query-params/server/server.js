@@ -1,8 +1,19 @@
-import http from "http";
+import { createServer } from "node:http";
 
-const server = http.createServer((req, res) => {
-	const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
-	const path = parsedUrl.pathname;
+const server = createServer((req, res) => {
+	res.setHeader("Access-Control-Allow-Origin", "http://localhost:5500");
+	res.setHeader("Access-Control-Allow-Credentials", "true");
+	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+	if (req.method === "OPTIONS") {
+		res.writeHead(204);
+		res.end();
+		return;
+	}
+
+	const url = new URL(req.url, `http://${req.headers.host}`);
+	const path = url.pathname;
 
 	if (path === "/favicon.ico") {
 		res.writeHead(204);
@@ -17,6 +28,6 @@ const server = http.createServer((req, res) => {
 	res.end(JSON.stringify({ path, query }));
 });
 
-server.listen(3000, () => {
-	console.log("Server running on http://localhost:3000");
+server.listen(8080, () => {
+	console.log("Server running on http://localhost:8080");
 });
