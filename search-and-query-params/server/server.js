@@ -1,4 +1,8 @@
+import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
+
+const json = readFileSync("./movies.json", "utf8");
+const movies = JSON.parse(json);
 
 const server = createServer((req, res) => {
 	res.setHeader("Access-Control-Allow-Origin", "http://localhost:5500");
@@ -15,17 +19,34 @@ const server = createServer((req, res) => {
 	const url = new URL(req.url, `http://${req.headers.host}`);
 	const path = url.pathname;
 
-	if (path === "/favicon.ico") {
-		res.writeHead(204);
-		res.end();
-		return;
+	if (req.method === "GET" && path === "/movies") {
+		try {
+			const searchParams = url.searchParams;
+			if (!searchParams.toString()) {
+				res.writeHead(200, { "Content-Type": "application/json" });
+				res.end(JSON.stringify({ movies }));
+				return;
+			}
+			const title = url.searchParams.get("title")?.toLowerCase() || "";
+			const year = url.searchParams.get("year") || "";
+			const movie = movies.filter((m) => {
+				const matchesTitle = title ? m.title.toLowerCase().includes(title) : true;
+				const matchesYear = year ? m.year.toString() === year : true;
+				return matchesTitle && matchesYear;
+			});
+			console.log(movie);
+			res.writeHead(200, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ movie }));
+			return;
+		} catch (error) {
+			console.error(error);
+			res.writeHead(400, { "Content-Type": "application/json" });
+			res.end(JSON.stringify(error));
+		}
+	} else {
+		res.writeHead(404, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ error: "Route not found" }));
 	}
-
-	const query = Object.fromEntries(parsedUrl.searchParams.entries());
-	console.log(path, query);
-
-	res.writeHead(200, { "Content-Type": "application/json" });
-	res.end(JSON.stringify({ path, query }));
 });
 
 server.listen(8080, () => {

@@ -5,10 +5,9 @@
 	"main": "server.js",
 	"type": "module",
 	"scripts": {
-		"dev": "node server.js"
+		"dev": "node --watch server.js"
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC",
-	"packageManager": "pnpm@10.12.1"
+	"license": "ISC"
 }
