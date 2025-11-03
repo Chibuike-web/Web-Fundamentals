@@ -99,3 +99,25 @@ button:focus-within {
 	outline: 3px #007bff3e solid;
 	outline-offset: 2px;
 }
+
+.movie {
+	margin: 12px 0;
+	max-width: 300px;
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+}
+
+.movie img {
+	max-width: 100%;
+	border-radius: 4px;
+}
+
+.error {
+	color: red;
+}
+
+.movie-list {
+	display: flex;
+	gap: 2rem;
+}

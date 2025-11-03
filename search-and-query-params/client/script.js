@@ -1,8 +1,11 @@
 const movieTitle = document.getElementById("movie-title");
 const movieYear = document.getElementById("movie-year");
 const searchBtn = document.getElementById("search-btn");
+const resultsContainer = document.createElement("div");
+resultsContainer.className = "movie-list";
+document.getElementById("app").appendChild(resultsContainer);
 
-searchBtn.addEventListener("click", (e) => {
+searchBtn.addEventListener("click", async (e) => {
 	e.preventDefault();
 	const params = new URLSearchParams();
 
@@ -17,6 +20,54 @@ searchBtn.addEventListener("click", (e) => {
 		params.append("year", yearInput);
 	}
 
-	console.log(window.location.pathname);
-	window.location.search = params.toString();
+	resultsContainer.innerHTML = "";
+
+	if (!titleInput && !yearInput) {
+		renderError("Enter either the title or year");
+		return;
+	}
+
+	// Update URL query params
+	window.history.replaceState(null, "", `?${params.toString()}`);
+
+	try {
+		const res = await fetch(`http://localhost:8080/movies?${params.toString()}`);
+
+		if (!res.ok) {
+			throw new Error(`Server responded with status: ${res.status}`);
+		}
+
+		const data = await res.json();
+
+		renderMovies(data.movie);
+		movieTitle.value = "";
+		movieYear.value = "";
+	} catch (error) {
+		renderError(`Error fetching movies`);
+	}
 });
+
+function renderMovies(movies) {
+	if (!movies.length) {
+		resultsContainer.innerHTML = `<p>No movies found</p>`;
+		return;
+	}
+
+	const movieList = movies
+		.map(
+			(m) => `
+      <div class="movie">
+        <img src="${m.image}" alt="${m.title}" />
+        <h2>${m.title}</h2>
+        <p>${m.year}</p>
+      </div>
+    `
+		)
+		.join("");
+
+	resultsContainer.innerHTML = movieList;
+}
+
+function renderError(message) {
+	resultsContainer.innerHTML = `<p class="error">${message}</p>`;
+}
