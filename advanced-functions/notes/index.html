@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Notes App with Closure based store</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				padding: 20px;
+				background: #f7f7f7;
+			}
+
+			#main {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				max-width: 600px;
+				margin-inline: auto;
+			}
+
+			#input-area {
+				width: 100%;
+				padding: 12px;
+				font-size: 16px;
+				border: 1px solid #ccc;
+				outline: none;
+				resize: none;
+				height: 80px;
+				border-radius: 6px;
+				background: #fff;
+			}
+
+			ul {
+				list-style: none;
+				margin-top: 20px;
+				padding: 0;
+			}
+
+			li {
+				background: #fff;
+				padding: 14px;
+				margin-bottom: 10px;
+				border-radius: 6px;
+				border: 1px solid #ddd;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<main id="main">
+			<textarea placeholder="Enter notes" id="input-area"></textarea>
+		</main>
+
+		<script type="module">
+			import { createStore } from "./store.js";
+
+			const main = document.getElementById("main");
+			const notesContainer = document.createElement("ul");
+			const inputArea = document.getElementById("input-area");
+
+			main.appendChild(notesContainer);
+
+			const store = createStore();
+
+			function renderNote() {
+				const notes = store.get();
+
+				const result = notes
+					.map((note) => {
+						return /*html*/ `
+          <li id="note-${note.id}">${note.text}</li>
+          `;
+					})
+					.join("");
+				notesContainer.innerHTML = result;
+			}
+
+			inputArea.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					const text = inputArea.value.trim();
+					if (!text) return;
+
+					store.add(text);
+					inputArea.value = "";
+					renderNote();
+				}
+			});
+
+			renderNote();
+		</script>
+	</body>
+</html>
