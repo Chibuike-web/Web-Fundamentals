@@ -1,0 +1,146 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Inter;
+	background: #fafafa;
+}
+
+.header {
+	background: #222;
+	color: #fff;
+}
+nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 700px;
+	margin-inline: auto;
+	padding: 20px;
+}
+
+.cart-icon {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 20px;
+}
+
+.icon svg {
+	width: 20px;
+	display: flex;
+	align-items: center;
+	justify-items: center;
+}
+
+.cart-count {
+	background: crimson;
+	color: #fff;
+	padding: 2px 8px;
+	border-radius: 12px;
+	font-size: 12px;
+}
+
+.container {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	padding: 20px;
+	gap: 20px;
+	max-width: 700px;
+	margin-inline: auto;
+}
+
+.products .product-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap: 15px;
+}
+
+.product-card {
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: white;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	text-align: center;
+}
+
+.product-card h1 {
+	font-size: 24px;
+}
+.product-card button {
+	padding: 8px;
+	border: none;
+	background: black;
+	color: white;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.cart {
+	border-left: 1px solid #ddd;
+	padding-left: 20px;
+}
+
+.cart-items {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	min-height: 120px;
+	background: white;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #eee;
+}
+
+.cart-summary {
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.checkout {
+	padding: 10px 15px;
+	background: black;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.cart-item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	border-bottom: 1px solid #eee;
+}
+
+.cart-info h2 {
+	font-size: 16px;
+	margin-bottom: 4px;
+}
+
+.cart-info .price {
+	font-size: 14px;
+	color: #444;
+}
+
+.remove-btn {
+	padding: 5px 10px;
+	font-size: 12px;
+	background: crimson;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.remove-btn:hover {
+	opacity: 0.8;
+}
