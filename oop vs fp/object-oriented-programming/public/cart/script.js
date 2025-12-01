@@ -16,68 +16,30 @@ const products = [
 
 const cart = [];
 
-function renderProductList() {
-	productList.innerHTML = products
-		.map((p) => {
-			return /*html*/ `
-    <div class="product-card" id="${p.id}">
-    <h1>${p.productName}</h1>
-    <p>$${p.price}</p>
-   <button class="add-to-cart-btn">Add to cart</button>
-    </div>
-    `;
-		})
-		.join("");
-}
-
-function renderCartItems() {
-	if (cart.length === 0) {
-		cartItemsContainer.innerHTML = `<p class="empty">Cart is empty</p>`;
-		return;
+class Product {
+	constructor(id, name, price) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
 	}
 
-	cartItemsContainer.innerHTML = cart
-		.map((item) => {
-			return /*html*/ `
-    <div class="cart-item" id="${item.id}">
-    <h2>${item.productName}</h2>
-    <p class="price">$${item.price}</p>
-    <button class="remove-btn" data-id="${item.id}">Remove</button>
-    </div>
-    `;
-		})
-		.join("");
+	renderItem() {
+		return `
+			<div class="product-card" id="${this.id}">
+				<h1>${this.name}</h1>
+				<p>$${this.price}</p>
+				<button class="add-to-cart-btn">Add to cart</button>
+			</div>
+		`;
+	}
 }
 
-document.body.addEventListener("click", (e) => {
-	if (e.target.classList.contains("add-to-cart-btn")) {
-		const productCard = e.target.closest(".product-card");
-		const productId = productCard.id;
-		const selectedProduct = products.find((p) => p.id === productId);
-		addToCart(selectedProduct);
+class ProductList {
+	constructor(products) {
+		this.products = products;
 	}
 
-	if (e.target.classList.contains("remove-btn")) {
-		const id = e.target.dataset.id;
-		removeFromCart(id);
+	render() {
+		return this.products.map((p) => p.renderItem()).join("");
 	}
-});
-
-renderProductList();
-renderCartItems();
-
-function addToCart(item) {
-	const exists = cart.some((c) => c.id === item.id);
-	if (exists) return;
-
-	cart.push(item);
-	renderCartItems();
 }
-
-function removeFromCart(id) {
-	const index = cart.findIndex((i) => i.id === id);
-	if (index !== -1) cart.splice(index, 1);
-	renderCartItems();
-}
-
-function calculateTotal() {}
