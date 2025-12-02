@@ -1,5 +1,7 @@
 const productList = document.querySelector(".product-list");
 const cartItemsContainer = document.querySelector(".cart-items");
+const cartCount = document.querySelector(".cart-count");
+const total = document.querySelector(".total");
 
 const products = [
 	{ id: "product-one", productName: "Wireless Bluetooth Earbuds", price: 39.99 },
@@ -19,12 +21,12 @@ const cart = [];
 function renderProductList() {
 	productList.innerHTML = products
 		.map((p) => {
-			return /*html*/ `
-    <div class="product-card" id="${p.id}">
-    <h1>${p.productName}</h1>
-    <p>$${p.price}</p>
-   <button class="add-to-cart-btn">Add to cart</button>
-    </div>
+			return `
+				<div class="product-card" id="${p.id}">
+					<h1>${p.productName}</h1>
+					<p>$${p.price}</p>
+					<button class="add-to-cart-btn" data-id="${p.id}">Add to cart</button>
+				</div>
     `;
 		})
 		.join("");
@@ -38,12 +40,12 @@ function renderCartItems() {
 
 	cartItemsContainer.innerHTML = cart
 		.map((item) => {
-			return /*html*/ `
-    <div class="cart-item" id="${item.id}">
-    <h2>${item.productName}</h2>
-    <p class="price">$${item.price}</p>
-    <button class="remove-btn" data-id="${item.id}">Remove</button>
-    </div>
+			return `
+				<div class="cart-item" id="${item.id}">
+					<h2>${item.productName}</h2>
+					<p class="price">$${item.price}</p>
+					<button class="remove-btn" data-id="${item.id}">Remove</button>
+				</div>
     `;
 		})
 		.join("");
@@ -51,15 +53,27 @@ function renderCartItems() {
 
 document.body.addEventListener("click", (e) => {
 	if (e.target.classList.contains("add-to-cart-btn")) {
-		const productCard = e.target.closest(".product-card");
-		const productId = productCard.id;
+		const productId = e.target.dataset.id;
 		const selectedProduct = products.find((p) => p.id === productId);
 		addToCart(selectedProduct);
+
+		e.target.classList.add("disabled");
+		e.target.disabled = true;
 	}
 
 	if (e.target.classList.contains("remove-btn")) {
-		const id = e.target.dataset.id;
-		removeFromCart(id);
+		const productId = e.target.dataset.id;
+		removeFromCart(productId);
+		const isExist = cart.some((p) => p.id === productId);
+
+		const addToCartBtns = document.querySelectorAll(".add-to-cart-btn");
+
+		addToCartBtns.forEach((btn) => {
+			if (!isExist && btn.dataset.id === productId) {
+				btn.classList.remove("disabled");
+				btn.disabled = false;
+			}
+		});
 	}
 });
 
@@ -72,14 +86,22 @@ function addToCart(item) {
 
 	cart.push(item);
 	renderCartItems();
+	getCartCount();
+	calculateTotal();
 }
 
 function removeFromCart(id) {
 	const index = cart.findIndex((i) => i.id === id);
 	if (index !== -1) cart.splice(index, 1);
 	renderCartItems();
+	getCartCount();
+	calculateTotal();
+}
+
+function getCartCount() {
+	cartCount.textContent = cart.length;
 }
 
 function calculateTotal() {
-	return cart.reduce((acc, item) => acc + item.price, 0);
+	total.textContent = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
 }
