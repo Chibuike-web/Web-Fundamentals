@@ -121,7 +121,8 @@ button:active {
 
 .edit-input {
 	width: 100%;
-	padding: 8px 10px;
+	padding-inline: 10px;
+	height: 26px;
 	border: 1px solid #ccc;
 	border-radius: 6px;
 	font-size: 14px;
