@@ -22,9 +22,9 @@ class TaskManager {
 	editTask(id) {
 		const taskDiv = document.querySelector(`.task[data-id="${id}"]`);
 		const taskObj = this.tasks.find((t) => t.id === id);
-		const taskName = taskDiv.querySelector(".task-name");
+		const taskContent = taskDiv.querySelector(".task-content");
 		const originalActions = taskDiv.querySelector(".original-actions");
-		taskName.classList.add("hide");
+		taskContent.classList.add("hide");
 		originalActions.classList.add("hide");
 
 		const editInput = document.createElement("input");
@@ -57,17 +57,36 @@ class TaskManager {
 	deleteTask(id) {
 		this.tasks = this.tasks.filter((t) => t.id !== id);
 	}
+
+	completeTask(id, checked) {
+		const taskObj = this.tasks.find((t) => t.id === id);
+		taskObj.completed = checked;
+	}
+
 	renderList() {
 		taskList.innerHTML = this.tasks
 			.map((task) => {
 				return `
         <li class="task-item">
         <div class="task" data-id="${task.id}">
-            <p class="task-name">${task.name}</p>
-            <div class="task-actions original-actions">
-              <button class="edit-task" data-id="${task.id}">Edit</button>
-              <button class="delete-task" data-id="${task.id}">Delete</button>
-            </div>
+          <div class="task-content">
+						<input 
+						type="checkbox" 
+						name="checkbox" 
+						class="checkbox"
+						data-id="${task.id}"
+						${task.completed ? "checked" : ""}
+						/>
+					  <p class="task-name">${task.name}</p>
+					</div>
+          <div class="task-actions original-actions">
+              <button class="edit-task" data-id="${task.id}" ${
+					task.completed && "disabled"
+				}>Edit</button>
+              <button class="delete-task" data-id="${task.id}" ${
+					!task.completed && "disabled"
+				}>Delete</button>
+          </div>
         </div>
         </li>
       `;
@@ -102,6 +121,11 @@ taskList.addEventListener("click", (e) => {
 		manager.renderList();
 	}
 	if (e.target.classList.contains("cancel-edit")) {
+		manager.renderList();
+	}
+	if (e.target.classList.contains("checkbox")) {
+		const taskId = e.target.dataset.id;
+		manager.completeTask(taskId, e.target.checked);
 		manager.renderList();
 	}
 });
