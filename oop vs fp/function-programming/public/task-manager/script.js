@@ -10,10 +10,23 @@ function renderList() {
 			return `
         <li class="task-item">
         <div class="task" data-id="${task.id}">
-            <p class="task-name">${task.name}</p>
+          <div class="task-content">
+					<input 
+					type="checkbox" 
+					name="checkbox" 
+					class="checkbox"
+					data-id="${task.id}"
+					${task.completed ? "checked" : ""}
+					/>
+					  <p class="task-name">${task.name}</p>
+					</div>
             <div class="task-actions original-actions">
-              <button class="edit-task" data-id="${task.id}">Edit</button>
-              <button class="delete-task" data-id="${task.id}">Delete</button>
+              <button class="edit-task" data-id="${task.id}" ${
+				task.completed && "disabled"
+			}>Edit</button>
+              <button class="delete-task" data-id="${task.id}" ${
+				!task.completed && "disabled"
+			}>Delete</button>
             </div>
         </div>
         </li>
@@ -51,6 +64,13 @@ taskList.addEventListener("click", (e) => {
 	if (e.target.classList.contains("cancel-edit")) {
 		renderList();
 	}
+
+	if (e.target.classList.contains("checkbox")) {
+		const taskId = e.target.dataset.id;
+		const taskObj = tasks.find((t) => t.id === taskId);
+		taskObj.completed = e.target.checked;
+		renderList();
+	}
 });
 
 function createTask() {
@@ -71,9 +91,9 @@ function createTask() {
 function editTask(id) {
 	const taskDiv = document.querySelector(`.task[data-id="${id}"]`);
 	const taskObj = tasks.find((t) => t.id === id);
-	const taskName = taskDiv.querySelector(".task-name");
+	const taskContent = taskDiv.querySelector(".task-content");
 	const originalActions = taskDiv.querySelector(".original-actions");
-	taskName.classList.add("hide");
+	taskContent.classList.add("hide");
 	originalActions.classList.add("hide");
 
 	const editInput = document.createElement("input");
@@ -107,7 +127,6 @@ function saveEdit(id) {
 
 function deleteTask(id) {
 	const index = tasks.findIndex((t) => t.id === id);
-	console.log(index);
 	if (index !== -1) {
 		tasks.splice(index, 1);
 	}

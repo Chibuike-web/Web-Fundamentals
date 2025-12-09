@@ -78,6 +78,10 @@ body {
 	width: 100%;
 	gap: 32px;
 }
+.task-content {
+	display: flex;
+	gap: 12px;
+}
 
 .task-name {
 	margin: 0;
@@ -109,6 +113,10 @@ body {
 
 button {
 	transition: transform 120ms;
+}
+
+button:disabled {
+	opacity: 0.5;
 }
 
 button:active {
@@ -151,4 +159,8 @@ button:active {
 
 .save-edit:hover {
 	background: #356ee6;
+}
+
+.disabled {
+	opacity: 0.5;
 }
